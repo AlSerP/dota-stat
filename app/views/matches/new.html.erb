@@ -4,7 +4,7 @@
   <div>
     <%= form.label :serial %><br>
     <%= form.number_field :serial %>
-    <% @article.errors.full_messages_for(:serial).each do |message| %>
+    <% @match.errors.full_messages_for(:serial).each do |message| %>
       <div><%= message %></div>
     <% end %>
   </div>
@@ -12,7 +12,7 @@
   <div>
     <%= form.label :score_radiant %><br>
     <%= form.number_field :score_radiant %>
-    <% @article.errors.full_messages_for(:score_radiant).each do |message| %>
+    <% @match.errors.full_messages_for(:score_radiant).each do |message| %>
       <div><%= message %></div>
     <% end %>
   </div>
@@ -20,7 +20,7 @@
   <div>
     <%= form.label :score_dire %><br>
     <%= form.number_field :score_dire %>
-    <% @article.errors.full_messages_for(:score_dire).each do |message| %>
+    <% @match.errors.full_messages_for(:score_dire).each do |message| %>
       <div><%= message %></div>
     <% end %>
   </div>
