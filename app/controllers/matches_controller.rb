@@ -21,6 +21,27 @@ class MatchesController < ApplicationController
     end
   end
 
+  def edit
+    @match = Match.find(params[:id])
+  end
+
+  def update
+    @match = Match.find(params[:id])
+
+    if @match.update(match_params)
+      redirect_to @match
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    @match = Match.find(params[:id])
+    @match.destroy
+
+    redirect_to root_path, status: :see_other
+  end
+
   private
   def match_params
     params.require(:match).permit(:serial, :score_radiant, :score_dire)
