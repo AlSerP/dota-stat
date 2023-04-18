@@ -4,6 +4,7 @@ Rails.application.routes.draw do
 
   resources :matches
   get "/heroes", to: "heroes#index"
+  get "/heroes/load", to: "heroes#load"
   # get "heroes/update", to: "heroes#update"
   # get "/matches", to: "matches#index"
   # get "/matches/:id", to: "matches#show"
