@@ -10,7 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_17_085808) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_18_121543) do
+  create_table "accounts", force: :cascade do |t|
+    t.integer "steamID32"
+    t.string "username"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "heros", force: :cascade do |t|
+    t.integer "hero_id"
+    t.string "name_en"
+    t.string "name_ru"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "matches", force: :cascade do |t|
     t.integer "serial"
     t.integer "score_radiant"

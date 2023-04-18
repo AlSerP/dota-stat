@@ -1,0 +1,11 @@
+<h1>Heroes</h1>
+
+<ul>
+    <% @heroes.each do |hero| %>
+        <li>
+            <%= hero.id %> - <%= hero.name_en %>
+        </li>
+    <% end %>
+</ul>
+
+<%= link_to 'Home', root_path %>

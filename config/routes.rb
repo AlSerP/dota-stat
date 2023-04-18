@@ -3,6 +3,8 @@ Rails.application.routes.draw do
   root "matches#index"
 
   resources :matches
+  get "/heroes", to: "heroes#index"
+  # get "heroes/update", to: "heroes#update"
   # get "/matches", to: "matches#index"
   # get "/matches/:id", to: "matches#show"
 end

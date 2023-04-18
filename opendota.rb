@@ -13,10 +13,12 @@ class Client
     HEROES_FILE = 'heroes.json'
     MATCHES_FILE = 'matches.json'
 
-    def initialize()
+    def initialize
         @heroes = {}
         # post_refresh()
-        parce_matches()
+        # get_heroes()
+        # get_matches()
+        # parce_matches()
         # get_heroes()
     end
 
@@ -25,30 +27,28 @@ class Client
         puts 'File saved'
     end
 
-    def get_match(match_id)
-        uri = URI("https://api.opendota.com/api/matches/#{match_id}")
+    def response_to_json(path, file=JSON_FILE)
+        uri = URI("https://api.opendota.com/api/#{path}")
         response = get uri
-
-        save_to_json response
+        save_to_json response, file
     end
 
-    def get_heroes()
-        uri = URI("https://api.opendota.com/api/heroes")
-        response = get uri
-        save_to_json response, HEROES_FILE 
+    def load_match(match_id)
+        response_to_json "matches/#{match_id}"
     end
 
-    def get_matches()
+    def load_heroes
+        response_to_json "heroes", HEROES_FILE
+    end
+
+    def load_matches
         # user_id32 = 85134343
-        user_id64 = 76561198052003432
-        user_id32 = user_id64 - I64
-        uri = URI("https://api.opendota.com/api/players/#{user_id32}/matches")
-
-        response = get uri
-        save_to_json response, MATCHES_FILE
+        # user_id64 = 76561198052003432
+        # user_id32 = user_id64 - I64
+        response_to_json "players/#{I32}/refresh", MATCHES_FILE
     end
 
-    def post_refresh()
+    def post_refresh
         # user_id = 85134343
         user_id64 = 76561198052003432
         user_id32 = user_id64 - I64
@@ -72,7 +72,7 @@ class Client
         return response
     end
 
-    def parce_heroes()
+    def parce_heroes
         file = File.open HEROES_FILE
         data = JSON.load file
         file.close()
@@ -84,7 +84,7 @@ class Client
         end
     end
 
-    def parce_match()
+    def parce_match
         file = File.open JSON_FILE
         data = JSON.load file
         file.close()
@@ -105,20 +105,22 @@ class Client
             puts '-----------------------------------'
         end 
     end
-    def parce_matches()
+    def parce_matches
         parce_heroes()
         file = File.open MATCHES_FILE
         data = JSON.load file
         file.close()
 
         data.each do |match|
-            get_match(match['match_id'])
+            load_match(match['match_id'])
             parce_match()
             break
         end 
     end
 end
 
-if __FILE__ == $0
-    app = Client.new
-end
+Client.new
+
+# if __FILE__ == $0
+    # app = Client.new
+# end
