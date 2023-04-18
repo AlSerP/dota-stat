@@ -1,3 +1,10 @@
 <h1>Match #<%= @match.serial %></h1>
 
 <p><%= @match.score_radiant %>-<%= @match.score_dire %></p>
+<%= link_to "Edit", edit_match_path(@match) %>
+<li><%= link_to "Destroy", match_path(@match), data: {
+                    turbo_method: :delete,
+                    turbo_confirm: "Are you sure?"
+                  } %></li>
+
+<%= link_to "Home", root_path %>
