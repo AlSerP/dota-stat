@@ -15,11 +15,6 @@ module DotaApi
         def initialize
             @heroes = {}
             parce_heroes()
-            # post_refresh()
-            # get_heroes()
-            # get_matches()
-            # parce_matches()
-            # get_heroes()
         end
     
         def save_to_json(text, file=JSON_FILE)
@@ -42,9 +37,6 @@ module DotaApi
         end
     
         def download_matches
-            # user_id32 = 85134343
-            # user_id64 = 76561198052003432
-            # user_id32 = user_id64 - I64
             download_to_json "players/#{I32}/refresh", MATCHES_FILE
         end
     
@@ -142,6 +134,6 @@ module DotaApi
     API = APIClient.new
 end
 
-# if __FILE__ == $0
-    # app = Client.new
-# end
+if __FILE__ == $0
+    API.parce_match
+end

@@ -5,6 +5,7 @@ class MatchesController < ApplicationController
 
   def show
     @match = Match.find(params[:id])
+    puts Match.column_names
   end
 
   def new
