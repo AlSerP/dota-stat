@@ -1,7 +1,6 @@
-require "#{Rails.root}/lib/tasks/dota_api.rb"
+# require "#{Rails.root}/lib/tasks/dota_api.rb"
 
 class MatchesController < ApplicationController
-  include DotaApi
 
   def index
     @matches = Match.all
@@ -9,7 +8,7 @@ class MatchesController < ApplicationController
 
   def show
     @match = Match.find(params[:id])
-    puts Match.column_names
+    # puts @match.match_stats.all
   end
 
   def new
@@ -17,8 +16,9 @@ class MatchesController < ApplicationController
   end
 
   def create
-    puts match_params
-    @match = create_match_by_serial(match_params[:serial])
+    # @match = ObjCreator::create_match_by_serial(match_params[:serial])
+    puts match_params[:serial]
+    @match = Match.create_by_serial(match_params[:serial])
     if @match
       redirect_to @match
     else
@@ -51,44 +51,5 @@ class MatchesController < ApplicationController
   def match_params
     # params.require(:match).permit(:serial, :score_radiant, :score_dire)
     params.require(:match).permit(:serial)
-  end
-
-  def create_match_by_serial(serial)
-    match = Match.new(match_params)
-    data = DotaApi::API.parce_match(match.serial)
-
-    match.score_radiant = data['dire_score']
-    match.score_dire = data['radiant_score']
-
-    if match.save
-      data['players'].each do |player|
-        match_stat = match.match_stats.create()
-        match_stat.kills = player['kills']
-        match_stat.deaths = player['deaths']
-        match_stat.assists = player['assists']
-        match_stat.last_hits = player['last_hits']
-        match_stat.denies = player['denies']
-        match_stat.networce = player['net_worth']
-        match_stat.networce = player['net_worth']
-        match_stat.hero = Hero.find_by(hero_id: player['hero_id'])
-
-        if Account.exists?(steamID32: player['account_id'])
-          match_stat.account = Account.find_by(steamID32: player['account_id'])
-        elsif player['account_id']
-          account = Account.new(steamID32: player['account_id'])
-          account_data = DotaApi::API.parce_player(player['account_id'])
-          if account_data['personaname']
-            account.username = account_data['personaname']
-          end
-          account.save
-          match_stat.account = account
-        end
-
-        match_stat.save
-      end
-      return match
-    end
-
-    return nil
   end
 end

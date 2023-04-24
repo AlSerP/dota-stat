@@ -8,7 +8,7 @@
     <h4>Dire:</h4>
   <% end %>
   <li>
-    <%= player_stat.account ? player_stat.account.username : 'Аноним' %> | <%= player_stat.hero.name_en %> - <%= player_stat.kills %>/<%= player_stat.deaths %>/<%= player_stat.assists %> 
+    <%= player_stat.account ? link_to(player_stat.account.username, player_stat.account) : 'Аноним' %> | <%= player_stat.hero.name_en %> - <%= player_stat.kills %>/<%= player_stat.deaths %>/<%= player_stat.assists %> 
   </li>
 <% end %>
 

@@ -1,0 +1,12 @@
+<h1>Account #<%= @account.steamID32 %> - <%= @account.username %></h1>
+
+<h4>Total matches is <%= @account.match_stats.count %></h4>
+
+<% @account.match_stats.find_each do |match_stat| %>
+    <li>
+        <%= link_to "#{match_stat.match.serial} (#{match_stat.match.score_radiant}-#{match_stat.match.score_dire})", match_stat.match %> | <%= match_stat.hero.name_en %> - <%= match_stat.kills %>/<%= match_stat.deaths %>/<%= match_stat.assists %>
+    </li>
+<% end %>
+
+<%= link_to "Update Matches", update_matches_path %>
+<%= link_to "Home", root_path %>

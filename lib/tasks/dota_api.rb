@@ -41,7 +41,7 @@ module DotaApi
         end
     
         def download_matches(steam_id32)
-            return download_to_json "players/#{steam_id32}/refresh", MATCHES_FILE
+            return download_to_json "players/#{steam_id32}/matches", MATCHES_FILE
         end
         
         def id32_to_id64(steam_id32)
@@ -87,33 +87,17 @@ module DotaApi
         def parce_match(match_serial)
             data = download_match(match_serial)
             return data
-            # puts "Match ##{data['match_id']}"
-            # puts '-----------------------------------'
-            # puts "Score: #{data['radiant_score']} - #{data['dire_score']}"
-            # puts data['radiant_win'] ? 'Radiant win' : 'Dire win'
-            # puts '-----------------------------------'
-            # puts "Game duration: #{data['duration'].to_f/60} mins"
-            # puts "Competitive match" if data['game_mode'] == 22
-            
-            # puts '-----------------------------------'
-            # data['players'].each do |player|
-            #     puts @heroes[player['hero_id']]
-            #     puts "KDA - #{player['kills']}/#{player['deaths']}/#{player['assists']}"
-            #     puts "Creep Stat #{player['last_hits']}/#{player['denies']}"
-            #     puts '-----------------------------------'
-            # end 
         end
-        def parce_matches
-            parce_heroes
-            file = File.open(MATCHES_FILE)
-            data = JSON.load(file)
-            file.close
-    
-            data.each do |match|
-                load_match(match['match_id'])
-                parce_match
-                break
-            end 
+
+        def parce_matches_id(steam_id32, start_from=0)
+            data = download_matches(steam_id32)
+            matches = []
+            data.each do |match_info|
+                if match_info['match_id'] > start_from
+                    matches.push(match_info['match_id'])
+                end
+            end
+            return matches
         end
         
         def parce_player(steam_id32)

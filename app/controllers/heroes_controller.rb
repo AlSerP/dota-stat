@@ -13,11 +13,11 @@ class HeroesController < ApplicationController
         heroes = DotaApi::API.get_heroes
         
         heroes.keys.each do |hero_id|
-        unless Hero.exists?(hero_id: hero_id)
-            hero = Hero.new(hero_id: hero_id, name_en: heroes[hero_id])
-            hero.save
+            unless Hero.exists?(hero_id: hero_id)
+                hero = Hero.new(hero_id: hero_id, name_en: heroes[hero_id])
+                hero.save
+            end
         end
-    end
 
     redirect_to heroes_path
     end
