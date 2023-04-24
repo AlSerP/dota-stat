@@ -4,9 +4,7 @@ require 'json'
 
 module DotaApi
     HOST = "https://api.opendota.com/api/"
-    # a = 76561198045400071
     I64 = 76561197960265728
-    I32 = 85134343
     class APIClient
         JSON_FILE = 'match.json'
         HEROES_FILE = 'heroes.json'
@@ -34,24 +32,28 @@ module DotaApi
             return download_to_json "matches/#{match_serial}"
         end
         
-        def download_player(steamID32)
-            return download_to_json "players/#{steamID32}"
+        def download_player(steam_id32)
+            return download_to_json "players/#{steam_id32}"
         end
 
         def download_heroes
             return download_to_json "heroes", HEROES_FILE
         end
     
-        def download_matches
-            return download_to_json "players/#{I32}/refresh", MATCHES_FILE
+        def download_matches(steam_id32)
+            return download_to_json "players/#{steam_id32}/refresh", MATCHES_FILE
         end
-    
-        def post_refresh
-            # user_id = 85134343
-            user_id64 = 76561198052003432
-            user_id32 = user_id64 - I64
-            puts user_id32
-            uri = URI("#{HOST}/players/#{user_id32}/refresh")
+        
+        def id32_to_id64(steam_id32)
+            return steam_id32 + I64
+        end
+
+        def id64_to_id32(steam_id64)
+            return steam_id64 - I64
+        end
+
+        def post_refresh(steam_id32)
+            uri = URI("#{HOST}/players/#{steam_id32}/refresh")
             
             https = Net::HTTP.new(uri.host, uri.port)
             https.use_ssl = true
@@ -64,7 +66,7 @@ module DotaApi
         end
     
         def get(uri)
-            response = Net::HTTP.get(uri) # => String
+            response = Net::HTTP.get(uri)
             puts "Got response from #{uri}"
     
             return response
@@ -114,8 +116,8 @@ module DotaApi
             end 
         end
         
-        def parce_player(steamID32)
-            data = download_player(steamID32)
+        def parce_player(steam_id32)
+            data = download_player(steam_id32)
             puts data
             return data['profile']
         end
