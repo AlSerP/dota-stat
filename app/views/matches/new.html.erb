@@ -1,5 +1,8 @@
 <h1>New Match</h1>
 
-<%= render 'form', match: @match %>
+<%= form_with model: @match do |match_form| %>
+  <%= match_form.text_field :serial %>
+  <%= match_form.submit "Create" %>
+<% end %>
 
 <%= link_to 'Home', root_path %>
