@@ -17,9 +17,9 @@ module DotaApi
         end
     
         def save_to_json(text, file=JSON_FILE)
-            puts text
+            # puts text
             File.open(file, 'w+') {|f| f.write text.force_encoding('utf-8') }
-            puts 'File saved'
+            # puts 'File saved'
         end
     
         def download_to_json(path, file=JSON_FILE, to_save=false)
@@ -63,12 +63,12 @@ module DotaApi
     
             response = https.request(request)
     
-            puts response
+            # puts response
         end
     
         def get(uri)
             response = Net::HTTP.get(uri)
-            puts "Got response from #{uri}"
+            # puts "Got response from #{uri}"
     
             return response
         end
@@ -87,14 +87,53 @@ module DotaApi
     
         def parce_match(match_serial)
             data = download_match(match_serial)
-            return data
+            players = []
+            data['start_time'] = Time.at(data['start_time']) if data['start_time']
+            data['score_dire'] = data['dire_score']
+            data['score_radiant'] = data['radiant_score']
+            data['start_time'] = Time.at(data['start_time']) if data['start_time']
+            data['serial'] = match_serial
+
+            begin
+            data['players'].each do |player|
+                player['networce'] = player['net_worth']
+                
+                player['start_time'] = Time.at(player['start_time'])
+                player['hero'] = Hero.find_by(hero_id: player['hero_id'])
+
+                if Account.exists?(steamID32: player['account_id'])
+                    player['account'] = Account.find_by(steamID32: player['account_id'])
+                elsif player['account_id']
+                    account = Account.new(steamID32: player['account_id'])
+                    account_data = parce_player(player['account_id'])
+                    if account_data
+                        account.username = account_data['personaname'] if account_data['personaname']
+                    else
+                        account.username = 'Аноним'
+                    end
+                    account.save
+                    player['account'] = account
+                else
+                    account = Account.new(steamID32: 0)
+                    account.username = 'Неизвестен'
+                    account.save
+                    player['account'] = account
+                end
+                player['match_id'] = match_serial
+                players.push(player.slice('kills', 'deaths', 'assists', 'last_hits', 'denies', 'networce', 'start_time', 'hero', 'account', 'match_id'))
+            end
+            rescue
+                puts "-------------ERROR MATCH #{match_serial}"
+            end
+            puts players
+            return data.slice('serial', 'score_dire', 'score_radiant', 'start_time', 'duration'), players
         end
 
         def parce_matches_id(steam_id32, start_from=0)
             def get_matches_id(account_id, start_from)
                 matches_set = Set[]
                 data = download_matches(account_id)
-                data.each { |match_info| matches.add(match_info['match_id']) if match_info['match_id'] > start_from }
+                data.each { |match_info| matches_set.add(match_info['match_id']) if match_info['match_id'] > start_from }
                 return matches_set
             end
 
@@ -112,7 +151,7 @@ module DotaApi
         
         def parce_player(steam_id32)
             data = download_player(steam_id32)
-            puts data
+            # puts data
             return data['profile']
         end
 
