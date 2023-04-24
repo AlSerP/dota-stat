@@ -1,3 +1,3 @@
 class Account < ApplicationRecord
-    belongs_to :match_stat
+    has_many :match_stats
 end

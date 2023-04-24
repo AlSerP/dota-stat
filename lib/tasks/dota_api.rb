@@ -18,26 +18,32 @@ module DotaApi
         end
     
         def save_to_json(text, file=JSON_FILE)
-            File.open(file, 'w+') {|f| f.write text }
+            puts text
+            File.open(file, 'w+') {|f| f.write text.force_encoding('utf-8') }
             puts 'File saved'
         end
     
-        def download_to_json(path, file=JSON_FILE)
+        def download_to_json(path, file=JSON_FILE, to_save=false)
             uri = URI("#{HOST}#{path}")
             response = get uri
-            save_to_json response, file
+            save_to_json response, file if to_save
+            return JSON.load response 
         end
     
-        def download_match(match_id)
-            download_to_json "matches/#{match_id}"
+        def download_match(match_serial)
+            return download_to_json "matches/#{match_serial}"
         end
-    
+        
+        def download_player(steamID32)
+            return download_to_json "players/#{steamID32}"
+        end
+
         def download_heroes
-            download_to_json "heroes", HEROES_FILE
+            return download_to_json "heroes", HEROES_FILE
         end
     
         def download_matches
-            download_to_json "players/#{I32}/refresh", MATCHES_FILE
+            return download_to_json "players/#{I32}/refresh", MATCHES_FILE
         end
     
         def post_refresh
@@ -76,26 +82,24 @@ module DotaApi
             end
         end
     
-        def parce_match
-            file = File.open JSON_FILE
-            data = JSON.load file
-            file.close
-    
-            puts "Match ##{data['match_id']}"
-            puts '-----------------------------------'
-            puts "Score: #{data['radiant_score']} - #{data['dire_score']}"
-            puts data['radiant_win'] ? 'Radiant win' : 'Dire win'
-            puts '-----------------------------------'
-            puts "Game duration: #{data['duration'].to_f/60} mins"
-            puts "Competitive match" if data['game_mode'] == 22
+        def parce_match(match_serial)
+            data = download_match(match_serial)
+            return data
+            # puts "Match ##{data['match_id']}"
+            # puts '-----------------------------------'
+            # puts "Score: #{data['radiant_score']} - #{data['dire_score']}"
+            # puts data['radiant_win'] ? 'Radiant win' : 'Dire win'
+            # puts '-----------------------------------'
+            # puts "Game duration: #{data['duration'].to_f/60} mins"
+            # puts "Competitive match" if data['game_mode'] == 22
             
-            puts '-----------------------------------'
-            data['players'].each do |player|
-                puts @heroes[player['hero_id']]
-                puts "KDA - #{player['kills']}/#{player['deaths']}/#{player['assists']}"
-                puts "Creep Stat #{player['last_hits']}/#{player['denies']}"
-                puts '-----------------------------------'
-            end 
+            # puts '-----------------------------------'
+            # data['players'].each do |player|
+            #     puts @heroes[player['hero_id']]
+            #     puts "KDA - #{player['kills']}/#{player['deaths']}/#{player['assists']}"
+            #     puts "Creep Stat #{player['last_hits']}/#{player['denies']}"
+            #     puts '-----------------------------------'
+            # end 
         end
         def parce_matches
             parce_heroes
@@ -109,7 +113,13 @@ module DotaApi
                 break
             end 
         end
-    
+        
+        def parce_player(steamID32)
+            data = download_player(steamID32)
+            puts data
+            return data['profile']
+        end
+
         def get_hero_image_by_id(hero_id)
             hero_name = @heroes[hero_id].downcase
             hero_name.gsub!('-', '')
