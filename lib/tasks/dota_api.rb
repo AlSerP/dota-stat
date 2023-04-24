@@ -1,6 +1,7 @@
 require 'uri'
 require 'net/http'
 require 'json'
+require 'set'
 
 module DotaApi
     HOST = "https://api.opendota.com/api/"
@@ -90,14 +91,23 @@ module DotaApi
         end
 
         def parce_matches_id(steam_id32, start_from=0)
-            data = download_matches(steam_id32)
-            matches = []
-            data.each do |match_info|
-                if match_info['match_id'] > start_from
-                    matches.push(match_info['match_id'])
-                end
+            def get_matches_id(account_id, start_from)
+                matches_set = Set[]
+                data = download_matches(account_id)
+                data.each { |match_info| matches.add(match_info['match_id']) if match_info['match_id'] > start_from }
+                return matches_set
             end
-            return matches
+
+            matches = Set[]
+            if steam_id32.class == [].class
+                steam_id32.each do |id32|
+                    matches |= get_matches_id(id32, start_from)
+                end
+            else
+                matches |= get_matches_id(steam_id32, start_from)
+            end
+
+            return matches.to_a
         end
         
         def parce_player(steam_id32)

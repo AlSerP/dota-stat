@@ -6,6 +6,7 @@ class Match < ApplicationRecord
     validates :serial, presence: true, uniqueness: true
     validates :score_radiant, presence: true
     validates :score_dire, presence: true
+    default_scope { order(serial: :desc) }
 
     def Match.create_by_serial(serial)
         if Match.exists?(serial: serial)
@@ -16,6 +17,8 @@ class Match < ApplicationRecord
 
         match.score_radiant = data['dire_score']
         match.score_dire = data['radiant_score']
+        match.start_time = Time.at( data['start_time'])
+        match.duration = data['duration']
 
         if match.save
             data['players'].each do |player|
@@ -27,6 +30,7 @@ class Match < ApplicationRecord
                 match_stat.denies = player['denies']
                 match_stat.networce = player['net_worth']
                 match_stat.networce = player['net_worth']
+                match_stat.start_time = player['start_time']
                 match_stat.hero = Hero.find_by(hero_id: player['hero_id'])
 
                 if Account.exists?(steamID32: player['account_id'])

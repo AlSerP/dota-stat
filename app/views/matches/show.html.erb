@@ -2,6 +2,9 @@
 
 <p><%= @match.score_radiant %>-<%= @match.score_dire %></p>
 
+Started at: <%= @match.start_time ? @match.start_time : 'NO INFO' %> <br>
+Time: <%= @match.duration ? "#{@match.duration / 60}:#{@match.duration % 60}" : '0:00' %>
+
 <h4>Radiant:</h4>
 <% @match.match_stats.all.each_with_index do |player_stat, i| %>
   <% if i == 5 %>

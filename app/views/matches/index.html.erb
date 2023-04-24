@@ -1,7 +1,7 @@
 <h1>Here matches will be</h1>
 
 <ul>
-    <% @matches.each do |match| %>
+    <% @matches.first(10).each do |match| %>
         <li>
             <%= link_to match.serial, match %> | Score <%= match.score_radiant %>-<%= match.score_dire %>
         </li>
