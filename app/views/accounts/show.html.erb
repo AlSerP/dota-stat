@@ -1,5 +1,11 @@
 <h1>Account #<%= @account.steamID32 %> - <%= @account.username %></h1>
 
+<h3>Main players:</h3>
+<% AccountsController::PRIME_STEAMID32.each do |prime| %>
+    <li><%= link_to Account.find_by(steamID32: prime).username, Account.find_by(steamID32: prime) %></li>
+<% end %>
+<li>-----------------------------------------------------</li>
+
 <h4>Total matches is <%= @account.match_stats.count %></h4>
 <p>Avg stat: <%= @account.match_stats.average(:kills).round(1) %>/<%= @account.match_stats.average(:deaths).round(1) %>/<%= @account.match_stats.average(:assists).round(1) %></p>
 
