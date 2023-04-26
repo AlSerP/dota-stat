@@ -1,24 +1,42 @@
-<h1>Match #<%= @match.serial %></h1>
+<%= stylesheet_link_tag "match.css" %>
 
-<p><%= @match.score_radiant %>-<%= @match.score_dire %></p>
 
-Started at: <%= @match.start_time ? @match.start_time : 'NO INFO' %> <br>
-Time: <%= @match.duration ? "#{@match.duration / 60}:#{@match.duration % 60}" : '0:00' %>
-
-<h4>Radiant:</h4>
-<% @match.match_stats.all.each_with_index do |player_stat, i| %>
-  <% if i == 5 %>
-    <h4>Dire:</h4>
-  <% end %>
-  <li>
-    <%= player_stat.account ? link_to(player_stat.account.username, player_stat.account) : 'Аноним' %> | <%= player_stat.hero.name_en %> - <%= player_stat.kills %>/<%= player_stat.deaths %>/<%= player_stat.assists %> 
-  </li>
-<% end %>
-
-<%= link_to "Edit", edit_match_path(@match) %>
-<li><%= link_to "Destroy", match_path(@match), data: {
-                    turbo_method: :delete,
-                    turbo_confirm: "Are you sure?"
-                  } %></li>
-
-<%= link_to "Home", root_path %>
+<main>
+<table class="match_table">
+    <caption>
+        <h2>Match #<%= @match.serial %></h2>
+        <span>
+        <%= link_to "Edit", edit_match_path(@match) %>
+        <%= link_to "Destroy", match_path(@match), data: {
+                            turbo_method: :delete,
+                            turbo_confirm: "Are you sure?"
+                        } %>
+        </span>
+        <p>Duration:  <%= @match.duration ? "#{@match.duration / 60}:#{@match.duration % 60}" : '0:00' %> (<%= @match.start_time ? @match.start_time : 'NO INFO' %>)</p>
+        </caption>
+    <tr>
+        <th>Player</th>
+        <th>Hero</th>
+        <th>Total gold</th>
+        <th>KDA</th>
+        <th>CreepStat</th>
+    </tr>
+    <tr style="color: #63e557;"><td colspan="5" align="left">Radiant - <%= @match.score_radiant %></td></tr>
+    <% @match.match_stats.all.each_with_index do |player_stat, i| %>
+    <% if i == 5 %>
+        <tr style="color: #e55757;"><td colspan="5" align="left">Dire - <%= @match.score_dire %></td></tr>
+    <% end %>
+    <% if i % 2 == 0 %>
+    <tr class="even_line">
+    <% else %>
+    <tr class="odd_line">
+    <% end %>
+        <td><%= player_stat.account ? link_to(player_stat.account.username, player_stat.account) : 'Аноним' %></td>
+        <td align="left"><%= player_stat.hero.name_en %></td>
+        <td align="center"><%= player_stat.networce %></td>
+        <td align="center"><%= player_stat.kills %>/<%= player_stat.deaths %>/<%= player_stat.assists %></td>
+        <td align="center"><%= player_stat.last_hits %>-<%= player_stat.denies %></td>
+    </tr>
+    <% end %>
+</table>
+</main>

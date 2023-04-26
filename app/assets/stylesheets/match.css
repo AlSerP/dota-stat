@@ -28,7 +28,7 @@ h1, h2, h3, h4, h5, p{
 }
 
 .match_table tr:hover {
-    background-color: #3f3e4a;
+    background-color: #4a3e3e;
 }
 
 .odd_line {
@@ -47,32 +47,4 @@ a:visited {
 }
 a:hover {
     color: #b7ceff;
-}
-
-.home_link {
-    position: fixed;
-    right: 24px;
-    top: 24px;
-    color: white;
-    text-decoration: none;
-}
-
-.home_link:visited {
-    color: white;
-}
-
-.home_link:hover {
-    color: #b7ceff;
-}
-
-.score_up {
-    background-color: #3e4a3e;
-}
-
-.score_equal {
-    background-color: #4a483e;
-}
-
-.score_down {
-    background-color: #4a3e3e;
 }

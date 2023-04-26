@@ -6,14 +6,29 @@
 <% end %>
 <li>-----------------------------------------------------</li>
 
-<h4>Total matches is <%= @account.match_stats.count %></h4>
-<p>Avg stat: <%= @account.match_stats.average(:kills).round(1) %>/<%= @account.match_stats.average(:deaths).round(1) %>/<%= @account.match_stats.average(:assists).round(1) %></p>
+<h4>Matches: <%= @account.match_stats.count %></h4>
+<p>Avg stat: <%= avg_kills = @account.match_stats.average(:kills).round(1) %>/<%= avg_deaths = @account.match_stats.average(:deaths).round(1) %>/<%= avg_assists = @account.match_stats.average(:assists).round(1) %></p>
+<% avg_stat = ((avg_kills * 2 + avg_assists) / (avg_deaths * 1.5)).round(0) %>
 
+<table class="match_table">
+    <tr>
+        <td>Match</td>
+        <td>Hero</td>
+        <td>KDA</td>
+    </tr>
 <% @account.match_stats.each do |match_stat| %>
-    <li>
-        <%= link_to "#{match_stat.match.serial} (#{match_stat.match.score_radiant}-#{match_stat.match.score_dire})", match_stat.match %> | <%= match_stat.hero.name_en %> - <%= match_stat.kills %>/<%= match_stat.deaths %>/<%= match_stat.assists %>
-    </li>
+<% stat = ((match_stat.kills * 2 + match_stat.assists) / (match_stat.deaths * 1.5)).round(0) %>
+    <% if avg_stat < stat %>
+    <tr class="score_up">
+    <% elsif avg_stat == stat %>
+    <tr class="score_equal">
+    <% else %>
+    <tr class="score_down">
+    <% end %>
+        <td><%= link_to "#{match_stat.match.serial} (#{match_stat.match.score_radiant}-#{match_stat.match.score_dire})", match_stat.match %></td>
+        <td><%= match_stat.hero.name_en %></td>
+        <td><%= match_stat.kills %>/<%= match_stat.deaths %>/<%= match_stat.assists %></td>
+    <tr>
 <% end %>
-
+</table>
 <%= link_to "Update Matches", update_matches_path %>
-<%= link_to "Home", root_path %>
