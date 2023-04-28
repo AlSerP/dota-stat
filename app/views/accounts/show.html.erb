@@ -1,10 +1,8 @@
 <h1>Account #<%= @account.steamID32 %> - <%= @account.username %></h1>
+<img src=<%= @account.avatar_url %> class="avatar_full">
 
-<h3>Main players:</h3>
-<% AccountsController::PRIME_STEAMID32.each do |prime| %>
-    <li><%= link_to Account.find_by(steamID32: prime).username, Account.find_by(steamID32: prime) %></li>
-<% end %>
-<li>-----------------------------------------------------</li>
+
+<%= render 'players' %>
 
 <h4>Matches: <%= @account.match_stats.count %></h4>
 <p>Avg stat: <%= avg_kills = @account.match_stats.average(:kills).round(1) %>/<%= avg_deaths = @account.match_stats.average(:deaths).round(1) %>/<%= avg_assists = @account.match_stats.average(:assists).round(1) %></p>

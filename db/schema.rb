@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_28_112645) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_28_150754) do
   create_table "accounts", force: :cascade do |t|
     t.integer "steamID32"
     t.string "username"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "last_update"
+    t.string "avatar_url"
   end
 
   create_table "heros", force: :cascade do |t|

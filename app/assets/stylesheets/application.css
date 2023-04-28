@@ -86,3 +86,8 @@ a:hover {
     width: 100px;
     margin-top: auto;
 }
+
+.avatar_full {
+    width: 184px;
+    margin-left: calc(50% - 92px);
+}

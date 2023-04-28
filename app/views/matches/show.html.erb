@@ -12,7 +12,7 @@
                             turbo_confirm: "Are you sure?"
                         } %>
         </span>
-        <p>Duration:  <%= @match.duration ? "#{@match.duration / 60}:#{@match.duration % 60}" : '0:00' %> (<%= @match.start_time ? @match.start_time : 'NO INFO' %>)</p>
+        <p>Duration:  <%= @match.duration ? "#{@match.duration / 60}:#{@match.duration % 60}" : '0:00' %> (<%= @match.start_time ? render('time', time: @match.start_time) : 'NO INFO' %>)</p>
         </caption>
     <tr>
         <th>Player</th>

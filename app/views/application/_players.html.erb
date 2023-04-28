@@ -1,0 +1,8 @@
+<h3>Main players:</h3>
+<ul>
+    <% Account::PRIME_STEAMID32.each do |steam_id32| %>
+        <% if Account.find_by(steamID32: steam_id32) %>
+        <li><%= link_to Account.find_by(steamID32: steam_id32).username, Account.find_by(steamID32: steam_id32) %></li>
+        <% end %>
+    <% end %>
+</ul>

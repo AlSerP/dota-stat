@@ -18,7 +18,8 @@ class AccountsController < ApplicationController
                 puts "New name: #{@account.username} for #{@account.steamID32}"
                 @account.save
             end
-
+            @account.avatar_url = player_profile['avatarfull']
+            
             unless @account.last_update
                 @account.last_update = @account.get_last_match.serial
                 @account.save

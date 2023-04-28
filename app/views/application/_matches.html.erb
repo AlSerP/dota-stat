@@ -1,0 +1,20 @@
+<table class="match_table">
+    <tr>
+        <td>Match</td>
+        <td>Score</td>
+        <td>Start Time</td>
+    </tr>
+<% matches.each do |match| %>
+    <% if match.radiant_win %>
+    <tr class="score_up">
+    <% else %>
+    <tr class="score_down">
+    <% end %>
+        <td><%= link_to "#{match.serial}", match %></td>
+        <td>
+            <%= "#{match.score_radiant} : #{match.score_radiant}" %>
+        </td>
+        <td><%= render 'time', time: match.start_time %></td>
+    <tr>
+<% end %>
+</table>

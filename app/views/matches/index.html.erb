@@ -1,22 +1,16 @@
 <h1>Here matches will be</h1>
 <h4>Total matches: <%= @matches.count %></h4>
 
-<h5>Main players: </h5>
-<ul>
-    <% Account::PRIME_STEAMID32.each do |steam_id32| %>
-        <% if Account.find_by(steamID32: steam_id32) %>
-        <li><%= link_to Account.find_by(steamID32: steam_id32).username, Account.find_by(steamID32: steam_id32) %></li>
-        <% end %>
-    <% end %>
-</ul>
+<%= render 'players' %>
 
-<ul>
-    <% @matches.first(10).each do |match| %>
-        <li>
-            <%= link_to match.serial, match %> | Score <%= match.score_radiant %>-<%= match.score_dire %>
-        </li>
-    <% end %>
-</ul>
+<%= render 'matches', matches: @matches.first(10)%>
+
+<div class="achievments">
+    <div class="category">
+        <h5>Best killer</h5>
+        <img src="">
+    </div>
+</div>
 
 <%= link_to "Heroes", heroes_path %>
 <%= link_to "Add Match", new_match_path %>
