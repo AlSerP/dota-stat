@@ -14,20 +14,22 @@
     <tr>
         <td>Match</td>
         <td>Hero</td>
+        <td></td>
         <td>KDA</td>
     </tr>
-<% @account.match_stats.each do |match_stat| %>
-<% stat = ((match_stat.kills * 2 + match_stat.assists) / (match_stat.deaths * 1.5)).round(0) %>
-    <% if avg_stat < stat %>
+<% @account.match_stats.first(15).each do |match_stat| %>
+<% stat = ((match_stat.kills * 2 + match_stat.assists) / (match_stat.deaths * 1.5)).round(1) %>
+    <% if (match_stat.match.radiant_win && match_stat.match.match_stats.all.find_index(match_stat) < 5) || (!match_stat.match.radiant_win && match_stat.match.match_stats.all.find_index(match_stat) >= 5) %>
     <tr class="score_up">
-    <% elsif avg_stat == stat %>
-    <tr class="score_equal">
     <% else %>
     <tr class="score_down">
     <% end %>
         <td><%= link_to "#{match_stat.match.serial} (#{match_stat.match.score_radiant}-#{match_stat.match.score_dire})", match_stat.match %></td>
+        <td>
+            <img src=<%= DotaApi::API.get_hero_image_by_id(match_stat.hero.hero_id) %> class="match_hero">
+        </td>
         <td><%= match_stat.hero.name_en %></td>
-        <td><%= match_stat.kills %>/<%= match_stat.deaths %>/<%= match_stat.assists %></td>
+        <td><%= match_stat.kills %>/<%= match_stat.deaths %>/<%= match_stat.assists %> | <%= stat > avg_stat ? image_tag("arrow_up.svg", class: "progress_icon") : image_tag("arrow_down.svg", class: "progress_icon") %></td>
     <tr>
 <% end %>
 </table>

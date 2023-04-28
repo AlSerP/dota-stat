@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_25_154631) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_28_112645) do
   create_table "accounts", force: :cascade do |t|
     t.integer "steamID32"
     t.string "username"
@@ -40,6 +40,20 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_25_154631) do
     t.integer "account_id"
     t.integer "match_id"
     t.datetime "start_time"
+    t.integer "item_0"
+    t.integer "item_1"
+    t.integer "item_2"
+    t.integer "item_3"
+    t.integer "item_4"
+    t.integer "item_5"
+    t.integer "backpack_0"
+    t.integer "backpack_1"
+    t.integer "backpack_2"
+    t.integer "item_neutral"
+    t.integer "hero_damage"
+    t.integer "hero_healing"
+    t.integer "tower_damage"
+    t.integer "level"
     t.index ["account_id"], name: "index_match_stats_on_account_id"
     t.index ["hero_id"], name: "index_match_stats_on_hero_id"
     t.index ["match_id"], name: "index_match_stats_on_match_id"
@@ -53,6 +67,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_25_154631) do
     t.datetime "updated_at", null: false
     t.datetime "start_time"
     t.integer "duration"
+    t.boolean "radiant_win"
+    t.string "replay_url"
   end
 
   add_foreign_key "match_stats", "accounts"

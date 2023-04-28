@@ -76,3 +76,13 @@ a:hover {
 .score_down {
     background-color: #4a3e3e;
 }
+
+.progress_icon {
+    width: 12px;
+    margin-left: auto;
+}
+
+.match_hero {
+    width: 100px;
+    margin-top: auto;
+}

@@ -21,10 +21,10 @@
         <th>KDA</th>
         <th>CreepStat</th>
     </tr>
-    <tr style="color: #63e557;"><td colspan="5" align="left">Radiant - <%= @match.score_radiant %></td></tr>
+    <tr style="color: #63e557;"><td colspan="5" align="left">Radiant - <%= @match.score_radiant %> <%= "(WIN)" if @match.radiant_win %></td></tr>
     <% @match.match_stats.all.each_with_index do |player_stat, i| %>
     <% if i == 5 %>
-        <tr style="color: #e55757;"><td colspan="5" align="left">Dire - <%= @match.score_dire %></td></tr>
+        <tr style="color: #e55757;"><td colspan="5" align="left">Dire - <%= @match.score_dire %> <%= "(WIN)" unless @match.radiant_win %></td></tr>
     <% end %>
     <% if i % 2 == 0 %>
     <tr class="even_line">

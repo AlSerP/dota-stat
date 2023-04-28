@@ -1,4 +1,14 @@
 <h1>Here matches will be</h1>
+<h4>Total matches: <%= @matches.count %></h4>
+
+<h5>Main players: </h5>
+<ul>
+    <% Account::PRIME_STEAMID32.each do |steam_id32| %>
+        <% if Account.find_by(steamID32: steam_id32) %>
+        <li><%= link_to Account.find_by(steamID32: steam_id32).username, Account.find_by(steamID32: steam_id32) %></li>
+        <% end %>
+    <% end %>
+</ul>
 
 <ul>
     <% @matches.first(10).each do |match| %>

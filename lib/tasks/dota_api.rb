@@ -5,7 +5,31 @@ require 'set'
 
 module DotaApi
     HOST = "https://api.opendota.com/api/"
+    STEAM_HOST = "https://api.steampowered.com/"
+    KEY = "88F36B323E7FD958A6B9AF16CE5C39DB"
     I64 = 76561197960265728
+
+    SPECIAL_LINKS = {
+        "shadow_fiend" => "nevermore",
+        "windranger" => "windrunner",
+        "vengeful_spirit" => "vengefulspirit",
+        "zeus" => "zuus",
+        "necrophos" => "necrolyte",
+        "queen_of_pain" => "queenofpain",
+        "wraith_king" => "skeleton_king",
+        "clockwerk" => "rattletrap",
+        "nature's_prophet" => "furion",
+        "lifestealer" => "life_stealer",
+        "doom" => "doom_bringer",
+        "outworld_destroyer" => "obsidian_destroyer",
+        "treant_protector" => "treant",
+        "io" => "wisp",
+        "centaur_warrunner" => "centaur",
+        "magnus" => "magnataur",
+        "timbersaw" => "shredder",
+        "underlord" => "abyssal_underlord"
+    }
+
     class APIClient
         JSON_FILE = 'match.json'
         HEROES_FILE = 'heroes.json'
@@ -17,9 +41,7 @@ module DotaApi
         end
     
         def save_to_json(text, file=JSON_FILE)
-            # puts text
             File.open(file, 'w+') {|f| f.write text.force_encoding('utf-8') }
-            # puts 'File saved'
         end
     
         def download_to_json(path, file=JSON_FILE, to_save=false)
@@ -28,13 +50,16 @@ module DotaApi
             save_to_json response, file if to_save
             return JSON.load response 
         end
-    
+        
         def download_match(match_serial)
             return download_to_json "matches/#{match_serial}"
         end
         
         def download_player(steam_id32)
-            return download_to_json "players/#{steam_id32}"
+            uri = URI("#{STEAM_HOST}ISteamUser/GetPlayerSummaries/v2/?key=#{KEY}&format=json&steamids=#{id32_to_id64(steam_id32)}")
+            response = JSON.load(get(uri))
+            # puts response
+            return response["response"]["players"][0]
         end
 
         def download_heroes
@@ -46,11 +71,11 @@ module DotaApi
         end
         
         def id32_to_id64(steam_id32)
-            return steam_id32 + I64
+            return steam_id32.to_i + I64
         end
 
         def id64_to_id32(steam_id64)
-            return steam_id64 - I64
+            return steam_id64.to_i - I64
         end
 
         def post_refresh(steam_id32)
@@ -103,30 +128,28 @@ module DotaApi
 
                 if Account.exists?(steamID32: player['account_id'])
                     player['account'] = Account.find_by(steamID32: player['account_id'])
-                elsif player['account_id']
+                elsif player['account_id'].to_i in Account::PRIME_STEAMID32
                     account = Account.new(steamID32: player['account_id'])
                     account_data = parce_player(player['account_id'])
                     if account_data
                         account.username = account_data['personaname'] if account_data['personaname']
                     else
-                        account.username = 'Аноним'
+                        account.username = 'НЕ НАЙДЕН'
                     end
                     account.save
                     player['account'] = account
                 else
-                    account = Account.new(steamID32: 0)
-                    account.username = 'Неизвестен'
-                    account.save
-                    player['account'] = account
+                    player['account'] = nil
                 end
                 player['match_id'] = match_serial
-                players.push(player.slice('kills', 'deaths', 'assists', 'last_hits', 'denies', 'networce', 'start_time', 'hero', 'account', 'match_id'))
+                players.push(player.slice('kills', 'deaths', 'assists', 'last_hits', 'denies', 'networce', 'start_time', 'hero', 'account', 'match_id', 'item_0', 'item_1', 'item_2', 'item_3', 'item_4', 'item_5', 'backpack_0', 'backpack_1', 'backpack_2', 'item_neutral', 'hero_damage', 'hero_healing', 'tower_damage', 'level'))
+                puts "CREATE MATCH STAT OF #{player['match_id']} FOR #{match_serial}"
             end
-            rescue
-                puts "-------------ERROR MATCH #{match_serial}"
+            rescue => error
+                puts "-------------ERROR MATCH #{match_serial} ----------- #{error}"
             end
-            puts players
-            return data.slice('serial', 'score_dire', 'score_radiant', 'start_time', 'duration'), players
+            puts "MATCH CREATED #{match_serial}"
+            return data.slice('serial', 'score_dire', 'score_radiant', 'start_time', 'duration', 'radiant_win', 'replay_url'), players
         end
 
         def parce_matches_id(steam_id32, start_from=0)
@@ -152,14 +175,20 @@ module DotaApi
         def parce_player(steam_id32)
             data = download_player(steam_id32)
             # puts data
-            return data['profile']
+            return data
         end
 
         def get_hero_image_by_id(hero_id)
             hero_name = @heroes[hero_id].downcase
             hero_name.gsub!('-', '')
             hero_name.gsub!(' ', '_')
-            url = "http://cdn.dota2.com/apps/dota2/images/heroes/#{hero_name}_lg.png"
+            
+            # puts  special_links.keys.class
+            if SPECIAL_LINKS.keys.include?(hero_name)
+                hero_name = SPECIAL_LINKS[hero_name]
+            end
+
+            url = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/#{hero_name}.png"
             return url
         end
     
