@@ -8,10 +8,24 @@
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    <style>
+    @font-face {
+        font-family: "Radiance";
+        src: url("/assets/radiance.woff"),
+             url("/assets/radiance-semibold.woff");
+    } 
+    @font-face {
+        font-family: "Reaver";
+        src: url("/assets/Reaver-Bold.woff"),
+             url("/assets/Reaver-SemiBold.woff");
+    } 
+    </style>
   </head>
 
   <body>
-    <%= yield %>
+    <div class="content">
+        <%= yield %>
+    </div>
 
     <%= link_to image_tag("icons8-home.svg"), root_path, class: "home_link" %>
   </body>

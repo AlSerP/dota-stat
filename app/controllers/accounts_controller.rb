@@ -5,7 +5,12 @@ class AccountsController < ApplicationController
     PRIME_STEAMID32 = [91737704, 85134343, 237330027, 259411999]
 
     def show
-        @account = Account.exists?(params[:id]) ? Account.find(params[:id]) : Account.find_by(steamID32: params[:id])   
+        @account = Account.exists?(params[:id]) ? Account.find(params[:id]) : Account.find_by(steamID32: params[:id])
+        week_ago = '2023-04-22 00:00:00'
+
+        @week_matches = @account.match_stats.where("start_time > ?", week_ago)
+        @week_avg = get_avg(@week_matches)
+        @global_avg = get_avg(@account.match_stats)
     end
 
     def update_matches
@@ -94,6 +99,16 @@ class AccountsController < ApplicationController
         MatchStat.create(stats_to_save_res)
 
         redirect_to root_path
+    end
+
+    def get_avg(match_stats)
+        avg = {}
+        unless match_stats.blank?
+            avg[:kills] = match_stats.average(:kills).round(1)
+            avg[:assists] = match_stats.average(:assists).round(1)
+            avg[:deaths] = match_stats.average(:deaths).round(1)
+        end
+        return avg
     end
 
     def create_matches(matches_id)

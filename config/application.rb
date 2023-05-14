@@ -15,5 +15,8 @@ module Stat
     config.autoload_paths += %W(#{config.root}/lib)
     config.autoload_paths += Dir["#{config.root}/lib/**/"]
     config.autoload_paths << "#{Rails.root}/lib"
+
+    config.assets.enabled = true
+    config.assets.paths << Rails.root.join('app', 'assets', 'fonts')
   end
 end

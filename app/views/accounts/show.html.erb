@@ -4,31 +4,45 @@
 
 <%= render 'players' %>
 
-<h4>Matches: <%= @account.match_stats.count %></h4>
-<p>Avg stat: <%= avg_kills = @account.match_stats.average(:kills).round(1) %>/<%= avg_deaths = @account.match_stats.average(:deaths).round(1) %>/<%= avg_assists = @account.match_stats.average(:assists).round(1) %></p>
-<% avg_stat = ((avg_kills * 2 + avg_assists) / (avg_deaths * 1.5)).round(0) %>
-
-<table class="match_table">
-    <tr>
-        <td>Match</td>
-        <td>Hero</td>
-        <td></td>
-        <td>KDA</td>
-    </tr>
-<% @account.match_stats.first(15).each do |match_stat| %>
-<% stat = ((match_stat.kills * 2 + match_stat.assists) / (match_stat.deaths * 1.5)).round(1) %>
-    <% if (match_stat.match.radiant_win && match_stat.match.match_stats.all.find_index(match_stat) < 5) || (!match_stat.match.radiant_win && match_stat.match.match_stats.all.find_index(match_stat) >= 5) %>
-    <tr class="score_up">
+<% if @account.match_stats.nil? %>
+    <p>Player doesn't have matches </p>
+<% else %>
+    <h3>Week stat:</h3>
+    <% if @week_matches.blank? %>
+        <p>There is no matches on this week</p>
     <% else %>
-    <tr class="score_down">
+        <h4>Matches: <%= @week_matches.count %></h4>
+        <p>Avg stat: <%= @week_avg[:kills] %>/<%= @week_avg[:assists] %>/<%= @week_avg[:deaths] %></p>
     <% end %>
-        <td><%= link_to "#{match_stat.match.serial} (#{match_stat.match.score_radiant}-#{match_stat.match.score_dire})", match_stat.match %></td>
-        <td>
-            <img src=<%= DotaApi::API.get_hero_image_by_id(match_stat.hero.hero_id) %> class="match_hero">
-        </td>
-        <td><%= match_stat.hero.name_en %></td>
-        <td><%= match_stat.kills %>/<%= match_stat.deaths %>/<%= match_stat.assists %> | <%= stat > avg_stat ? image_tag("arrow_up.svg", class: "progress_icon") : image_tag("arrow_down.svg", class: "progress_icon") %></td>
-    <tr>
+
+    <h4>Matches: <%= @account.match_stats.count %></h4>
+    <p>Avg stat: <%= @global_avg[:kills] %>/<%= @global_avg[:assists] %>/<%= @global_avg[:deaths] %></p>
+
+
+    <% avg_stat = ((@global_avg[:kills] * 2 + @global_avg[:assists]) / (@global_avg[:deaths] * 1.5)).round(0) %>
+
+    <table class="match_table">
+        <tr>
+            <td>Match</td>
+            <td>Hero</td>
+            <td></td>
+            <td>KDA</td>
+        </tr>
+    <% @account.match_stats.first(15).each do |match_stat| %>
+    <% stat = ((match_stat.kills * 2 + match_stat.assists) / (match_stat.deaths * 1.5)).round(1) %>
+        <% if (match_stat.match.radiant_win && match_stat.match.match_stats.all.find_index(match_stat) < 5) || (!match_stat.match.radiant_win && match_stat.match.match_stats.all.find_index(match_stat) >= 5) %>
+        <tr class="score_up">
+        <% else %>
+        <tr class="score_down">
+        <% end %>
+            <td><%= link_to "#{match_stat.match.serial} (#{match_stat.match.score_radiant}-#{match_stat.match.score_dire})", match_stat.match %></td>
+            <td>
+                <img src=<%= DotaApi::API.get_hero_image_by_id(match_stat.hero.hero_id) %> class="match_hero">
+            </td>
+            <td><%= match_stat.hero.name_en %></td>
+            <td><%= match_stat.kills %>/<%= match_stat.deaths %>/<%= match_stat.assists %> | <%= stat > avg_stat ? image_tag("arrow_up.svg", class: "progress_icon") : image_tag("arrow_down.svg", class: "progress_icon") %></td>
+        <tr>
+    <% end %>
+    </table>
 <% end %>
-</table>
 <%= link_to "Update Matches", update_matches_path %>

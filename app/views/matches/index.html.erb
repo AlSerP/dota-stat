@@ -3,12 +3,20 @@
 
 <%= render 'players' %>
 
-<%= render 'matches', matches: @matches.first(10)%>
+<%= render 'matches', matches: @matches %>
 
-<div class="achievments">
+<div class="achievements">
     <div class="category">
-        <h5>Best killer</h5>
-        <img src="">
+        <h5>Best killer:</h5>
+        <span class="player"><%= @best[:kills][1].username %></span> <span class="score"><%= @best[:kills][0] %></span>
+    </div>
+    <div class="category">
+        <h5>Best assister:</h5>
+        <span class="player"><%= @best[:assists][1].username %></span><span class="score"><%= @best[:assists][0] %></span>
+    </div>
+    <div class="category">
+        <h5>Undying:</h5>
+        <span class="player"><%= @best[:deaths][1].username %></span> <span class="score"><%= @best[:deaths][0] %></span>
     </div>
 </div>
 
