@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_28_150754) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_14_122436) do
   create_table "accounts", force: :cascade do |t|
     t.integer "steamID32"
     t.string "username"
@@ -26,6 +26,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_28_150754) do
     t.string "name_ru"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "avatar_url"
   end
 
   create_table "match_stats", force: :cascade do |t|

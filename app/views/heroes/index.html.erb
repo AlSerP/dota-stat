@@ -3,7 +3,7 @@
 <ul>
     <% @heroes.each do |hero| %>
         <li>
-            <%= hero.id %> - <%= hero.name_en %> <img src="<%= @images[hero.hero_id] %>">
+            <%= hero.id %> - <%= hero.name_en %> <img src="<%= hero.avatar_url %>">
         </li>
     <% end %>
 </ul>

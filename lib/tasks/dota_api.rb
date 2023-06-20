@@ -199,7 +199,19 @@ module DotaApi
             end
             return images
         end
-    
+        
+        def get_item_by_id(item_id)
+            if item_id == 0
+                return {id: 0, name: '', url: ''}
+            end
+            file = File.open('./lib/tasks/items.json')
+            data = JSON.load(file)
+            item_name = data[item_id.to_s]
+            url = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/#{item_name}.png"
+            item_name = item_name.split('_').join(' ')
+            return {id: item_id, name: item_name, url: url}
+        end
+
         def get_heroes
             return @heroes
         end

@@ -1,6 +1,3 @@
-<%= stylesheet_link_tag "match.css" %>
-
-
 <main>
 <table class="match_table">
     <caption>
@@ -15,28 +12,48 @@
         <p>Duration:  <%= @match.duration ? "#{@match.duration / 60}:#{@match.duration % 60}" : '0:00' %> (<%= @match.start_time ? render('time', time: @match.start_time) : 'NO INFO' %>)</p>
         </caption>
     <tr>
-        <th>Player</th>
-        <th>Hero</th>
-        <th>Total gold</th>
-        <th>KDA</th>
-        <th>CreepStat</th>
+        <th>Игрок</th>
+        <th>Герой</th>
+        <th class="closed"></th>
+        <th class="closed"></th>
+        <th class="closed"></th>
+        <th class="closed"></th>
+        <th class="closed"></th>
+        <th class="closed"></th>
+        <th>Ценность</th>
+        <th class="opened">К/Д/А</th>
+        <th class="opened">Крипы</th>
     </tr>
     <tr style="color: #63e557;"><td colspan="5" align="left">Radiant - <%= @match.score_radiant %> <%= "(WIN)" if @match.radiant_win %></td></tr>
     <% @match.match_stats.all.each_with_index do |player_stat, i| %>
     <% if i == 5 %>
         <tr style="color: #e55757;"><td colspan="5" align="left">Dire - <%= @match.score_dire %> <%= "(WIN)" unless @match.radiant_win %></td></tr>
     <% end %>
-    <% if i % 2 == 0 %>
-    <tr class="even_line">
-    <% else %>
-    <tr class="odd_line">
-    <% end %>
+    <tr class="<%= i % 2 == 0 ? 'even_line' : 'odd_line' %>">
         <td><%= player_stat.account ? link_to(player_stat.account.username, player_stat.account) : 'Аноним' %></td>
-        <td align="left"><%= player_stat.hero.name_en %></td>
-        <td align="center"><%= player_stat.networce %></td>
-        <td align="center"><%= player_stat.kills %>/<%= player_stat.deaths %>/<%= player_stat.assists %></td>
-        <td align="center"><%= player_stat.last_hits %>-<%= player_stat.denies %></td>
+        <td align="left"><img src="<%= player_stat.hero.avatar_url %>" class="match_hero"></td>
+        <td align="center" class="closed"><img src="<%= DotaApi::API.get_item_by_id(player_stat.item_0)[:url] %>"></td>
+        <td align="center" class="closed"><img src="<%= DotaApi::API.get_item_by_id(player_stat.item_1)[:url] %>"></td>
+        <td align="center" class="closed"><img src="<%= DotaApi::API.get_item_by_id(player_stat.item_2)[:url] %>"></td>
+        <td align="center" class="closed"><img src="<%= DotaApi::API.get_item_by_id(player_stat.item_3)[:url] %>"></td>
+        <td align="center" class="closed"><img src="<%= DotaApi::API.get_item_by_id(player_stat.item_4)[:url] %>"></td>
+        <td align="center" class="closed"><img src="<%= DotaApi::API.get_item_by_id(player_stat.item_5)[:url] %>"></td>
+        <td align="center"><span style="color: gold"><%= number_with_delimiter(player_stat.networce, delimiter: ".") %><%= image_tag("coin.svg", class: "icon_medium") %></span></td>
+        <td align="center" class="opened"><%= player_stat.kills %>/<%= player_stat.deaths %>/<%= player_stat.assists %></td>
+        <td align="center" class="opened"><%= player_stat.last_hits %>-<%= player_stat.denies %></td>
     </tr>
     <% end %>
+    <button onclick="change_table();">Items</button>
 </table>
+<script>
+    function change_table() {
+        let elements_closed = document.getElementsByClassName('closed');
+        let elements_opened = document.getElementsByClassName('opened');
+        let all_elements = [...elements_closed, ...elements_opened];
+        for(let i = 0; i < all_elements.length; i++) {
+        all_elements[i].classList.toggle('opened')
+        all_elements[i].classList.toggle('closed')
+        }
+    }
+</script>
 </main>

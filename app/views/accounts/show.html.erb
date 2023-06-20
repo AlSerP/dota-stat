@@ -37,10 +37,10 @@
         <% end %>
             <td><%= link_to "#{match_stat.match.serial} (#{match_stat.match.score_radiant}-#{match_stat.match.score_dire})", match_stat.match %></td>
             <td>
-                <img src=<%= DotaApi::API.get_hero_image_by_id(match_stat.hero.hero_id) %> class="match_hero">
+                <img src=<%= match_stat.hero.avatar_url %> class="match_hero">
             </td>
             <td><%= match_stat.hero.name_en %></td>
-            <td><%= match_stat.kills %>/<%= match_stat.deaths %>/<%= match_stat.assists %> | <%= stat > avg_stat ? image_tag("arrow_up.svg", class: "progress_icon") : image_tag("arrow_down.svg", class: "progress_icon") %></td>
+            <td><%= match_stat.kills %>/<%= match_stat.deaths %>/<%= match_stat.assists %> | <%= stat > avg_stat ? image_tag("arrow_up.svg", class: "icon_small") : image_tag("arrow_down.svg", class: "icon_small") %></td>
         <tr>
     <% end %>
     </table>

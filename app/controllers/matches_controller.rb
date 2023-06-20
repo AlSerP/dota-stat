@@ -55,7 +55,7 @@ class MatchesController < ApplicationController
     end
 
     def get_best(players_id32)
-        best = {kills: [0, nil], assists: [0, nil], deaths: [0, nil]}
+        best = {kills: [0, nil], assists: [0, nil], deaths: [100, nil]}
         players_id32.each do |players_id32|
             player = Account.find_by(steamID32: players_id32)
             if player
@@ -72,8 +72,8 @@ class MatchesController < ApplicationController
                 end
 
                 deaths = player.match_stats.average(:deaths).round(1)
-                if deaths > best[:deaths][0]
-                    best[:deaths][0] = kills 
+                if deaths < best[:deaths][0]
+                    best[:deaths][0] = deaths 
                     best[:deaths][1] = player 
                 end
             end

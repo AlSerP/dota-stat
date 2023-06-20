@@ -13,6 +13,7 @@ body {
     font-family: 'Radiance', sans-serif;
     background: linear-gradient(90deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.8)), url('assets/dota_back.jpeg');
     background-attachment: fixed;
+    background-size: cover;
 }
 
 h1,
@@ -35,6 +36,7 @@ p {
     backdrop-filter: blur(5px);
     /* background: linear-gradient(90deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)); */
     padding-top: 32px;
+    min-height: calc(100vh - 32px);
 }
 
 .match_table {
@@ -105,11 +107,6 @@ a:hover {
     background-color: #4a3e3e;
 }
 
-.progress_icon {
-    width: 12px;
-    margin-left: auto;
-}
-
 .match_hero {
     width: 100px;
     margin-top: auto;
@@ -130,4 +127,22 @@ a:hover {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.category .player {
+    margin: 12px;
+}
+
+.icon_medium {
+    width: 20px;
+    margin-left: 2px;
+}
+
+.icon_small {
+    width: 12px;
+    margin-left: auto;
+}
+
+.closed {
+    display: none;
 }

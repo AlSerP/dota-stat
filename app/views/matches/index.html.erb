@@ -1,24 +1,15 @@
 <h1>Here matches will be</h1>
-<h4>Total matches: <%= @matches.count %></h4>
+
+<h3>Достижения недели</h3>
+<div class="achievements">
+    <%= render 'category', best: @best[:kills], name: "Убийца" %>
+    <%= render 'category', best: @best[:assists], name: "Помощник" %>
+    <%= render 'category', best: @best[:deaths], name: "Неубиваемый" %>
+</div>
 
 <%= render 'players' %>
 
 <%= render 'matches', matches: @matches %>
-
-<div class="achievements">
-    <div class="category">
-        <h5>Best killer:</h5>
-        <span class="player"><%= @best[:kills][1].username %></span> <span class="score"><%= @best[:kills][0] %></span>
-    </div>
-    <div class="category">
-        <h5>Best assister:</h5>
-        <span class="player"><%= @best[:assists][1].username %></span><span class="score"><%= @best[:assists][0] %></span>
-    </div>
-    <div class="category">
-        <h5>Undying:</h5>
-        <span class="player"><%= @best[:deaths][1].username %></span> <span class="score"><%= @best[:deaths][0] %></span>
-    </div>
-</div>
 
 <%= link_to "Heroes", heroes_path %>
 <%= link_to "Add Match", new_match_path %>
