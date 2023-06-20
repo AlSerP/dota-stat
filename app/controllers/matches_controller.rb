@@ -21,9 +21,9 @@ class MatchesController < ApplicationController
         puts match_params[:serial]
         @match = Match.create_by_serial(match_params[:serial])
         if @match
-        redirect_to @match
+            redirect_to @match
         else
-        render :new, status: :unprocessable_entity
+            render :new, status: :unprocessable_entity
         end
     end
 

@@ -1,0 +1,2 @@
+class ProPlayer < ApplicationRecord
+end

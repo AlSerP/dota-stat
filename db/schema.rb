@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_14_122436) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_20_155128) do
   create_table "accounts", force: :cascade do |t|
     t.integer "steamID32"
     t.string "username"
@@ -73,7 +73,48 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_14_122436) do
     t.string "replay_url"
   end
 
+  create_table "pro_matches", force: :cascade do |t|
+    t.integer "score_radiant"
+    t.integer "score_dire"
+    t.boolean "radiant_win"
+    t.integer "duration"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "pro_players", force: :cascade do |t|
+    t.string "name"
+    t.string "username"
+    t.integer "elo"
+    t.integer "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "pro_stats", force: :cascade do |t|
+    t.integer "kills"
+    t.integer "deaths"
+    t.integer "assists"
+    t.integer "position"
+    t.float "elo_diff"
+    t.integer "pro_player_id"
+    t.integer "pro_match_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["pro_match_id"], name: "index_pro_stats_on_pro_match_id"
+    t.index ["pro_player_id"], name: "index_pro_stats_on_pro_player_id"
+  end
+
+  create_table "teams", force: :cascade do |t|
+    t.string "name"
+    t.integer "top"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   add_foreign_key "match_stats", "accounts"
   add_foreign_key "match_stats", "heros"
   add_foreign_key "match_stats", "matches"
+  add_foreign_key "pro_stats", "pro_matches"
+  add_foreign_key "pro_stats", "pro_players"
 end

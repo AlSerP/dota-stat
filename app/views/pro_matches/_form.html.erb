@@ -1,0 +1,15 @@
+<%= form_with model: pro_match do |form| %>
+    <div>
+        <%= form.label :score_radiant %><br>
+        <%= form.number_field :score_radiant %>
+    </div>
+
+    <div>
+        <%= form.label :score_dire %><br>
+        <%= form.number_field :score_dire %>
+    </div>
+
+    <div>
+        <%= form.submit %>
+    </div>
+<% end %>
