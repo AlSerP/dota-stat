@@ -4,19 +4,24 @@
 
 <%= render 'players' %>
 
-<% if @account.match_stats.nil? %>
+<% unless @account.matches? %>
     <p>Player doesn't have matches </p>
 <% else %>
     <h3>Week stat:</h3>
-    <% if @week_matches.blank? %>
+    <% unless @week_matches %>
         <p>There is no matches on this week</p>
     <% else %>
         <h4>Matches: <%= @week_matches.count %></h4>
-        <p>Avg stat: <%= @week_avg[:kills] %>/<%= @week_avg[:assists] %>/<%= @week_avg[:deaths] %></p>
+        <p>Avg stat: <%= @week_avg[:kills] %>/<%= @week_avg[:deaths] %>/<%= @week_avg[:assists] %></p>
+
+        <h4>Hero of the week</h4>
+        <img src=<%= @account.get_popular_hero_for_week.avatar_url %> class="match_hero">
     <% end %>
 
+    <br>
+    <h3>Global stat:</h3>
     <h4>Matches: <%= @account.match_stats.count %></h4>
-    <p>Avg stat: <%= @global_avg[:kills] %>/<%= @global_avg[:assists] %>/<%= @global_avg[:deaths] %></p>
+    <p>Avg stat: <%= @global_avg[:kills] %>/<%= @global_avg[:deaths] %>/<%= @global_avg[:assists] %></p>
 
 
     <% avg_stat = ((@global_avg[:kills] * 2 + @global_avg[:assists]) / (@global_avg[:deaths] * 1.5)).round(0) %>

@@ -66,8 +66,10 @@ module DotaApi
             return download_to_json "heroes", HEROES_FILE
         end
     
-        def download_matches(steam_id32)
-            return download_to_json "players/#{steam_id32}/matches", MATCHES_FILE
+        def download_matches(steam_id32, limit=-1)
+            url = "players/#{steam_id32}/matches"
+            params = "?limit=#{limit}"
+            return download_to_json url + params, MATCHES_FILE
         end
         
         def id32_to_id64(steam_id32)
@@ -143,19 +145,21 @@ module DotaApi
                 end
                 player['match_id'] = match_serial
                 players.push(player.slice('kills', 'deaths', 'assists', 'last_hits', 'denies', 'networce', 'start_time', 'hero', 'account', 'match_id', 'item_0', 'item_1', 'item_2', 'item_3', 'item_4', 'item_5', 'backpack_0', 'backpack_1', 'backpack_2', 'item_neutral', 'hero_damage', 'hero_healing', 'tower_damage', 'level'))
-                puts "CREATE MATCH STAT OF #{player['match_id']} FOR #{match_serial}"
+                # puts "CREATE MATCH STAT OF #{player['account_id']} FOR #{match_serial}"
             end
             rescue => error
                 puts "-------------ERROR MATCH #{match_serial} ----------- #{error}"
             end
+            
             puts "MATCH CREATED #{match_serial}"
             return data.slice('serial', 'score_dire', 'score_radiant', 'start_time', 'duration', 'radiant_win', 'replay_url'), players
         end
 
-        def parce_matches_id(steam_id32, start_from=0)
-            def get_matches_id(account_id, start_from)
+        def parce_matches_id(steam_id32, start_from=0, limit=-1)
+            # Returns all matches for users from stam_id32
+            def get_matches_id(account_id, start_from=0, limit=-1)
                 matches_set = Set[]
-                data = download_matches(account_id)
+                data = download_matches(account_id, limit)
                 data.each { |match_info| matches_set.add(match_info['match_id']) if match_info['match_id'] > start_from }
                 return matches_set
             end
@@ -169,7 +173,7 @@ module DotaApi
                 matches |= get_matches_id(steam_id32, start_from)
             end
 
-            return matches.to_a
+            return matches.to_a.uniq
         end
         
         def parce_player(steam_id32)
